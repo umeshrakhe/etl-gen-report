@@ -55,7 +55,7 @@ if __name__ == "__main__":
     test_1()
     end = time.time()
     print(end - start)
-    print("------------------------")
+    print("-----------------------------------------")
     start = time.time()
     print("hello")
     test_2()
