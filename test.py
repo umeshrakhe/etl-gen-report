@@ -95,7 +95,24 @@ def validate_and_append_outcome(facts: List[Fact], rules: List[Rule]) -> List[Fa
 
     return validated_facts
 
+def load_facts_from_file(file_path: str) -> List[Fact]:
+    """
+    Loads facts from a CSV file.
 
+    Args:
+        file_path (str): Path to the CSV file containing facts.
+
+    Returns:
+        List[Fact]: List of facts loaded from the file.
+    """
+
+    facts = []
+    with open(file_path, newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            facts.append(Fact(**row))
+
+    return facts
 if __name__ == "__main__":
     age_cond = Condition(name="Age>=21", evaluation_function=lambda fact: fact.age >= 21)
     occupation_cond = Condition(name="Occupation==Software Developer", evaluation_function=lambda fact: fact.occupation == "Software Developer")
@@ -107,6 +124,8 @@ if __name__ == "__main__":
     sarah = Fact(age=35, name="Sarah Purple", occupation="Data Engineer")
     barry = Fact(age=27, name="Barry White", occupation="Software Developer")
 
+   
+    
     rule1 = Rule(name="Age and Occupation Rule")
     rule1.add_condition(age_cond)
     rule1.add_condition(occupation_cond)
@@ -115,7 +134,14 @@ if __name__ == "__main__":
 
     rule2 = Rule(name="Age Rule")
     
+    # Load facts from a CSV file
+    facts = load_facts_from_file("path/to/facts.csv")
 
+    # Create and evaluate rules on loaded facts
+    for fact in facts:
+        outcomes = rule1.evaluate(fact)
+        # Process outcomes (print, store in database, etc.)
+    
     rules = [rule1, rule2]
 
     validated_facts = validate_and_append_outcome([john, sarah, barry], rules)
