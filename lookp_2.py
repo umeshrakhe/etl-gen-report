@@ -35,6 +35,21 @@ def enrich_transactional_data(employee_data_path, transaction_data_path, output_
     with pd.read_csv(transaction_data_path, chunksize=10000) as reader:
         result = reader.apply(process_and_enrich_chunk)  # Apply function to each chunk
         result.to_csv(output_path, index=False)
+        
+def process_and_enrich_chunk(reader, chunksize):
+    for chunk in pd.read_csv(reader, chunksize=chunksize):
+        # Convert chunk to DataFrame and process
+        df = chunk.to_frame()
+
+        # ... (rest of the processing logic)
+
+        # Yield the processed chunk
+        yield df
+
+# In enrich_transactional_data function:
+with pd.read_csv(transaction_data_path, chunksize=1000) as reader:
+    result = pd.concat(process_and_enrich_chunk(reader, 1000))  # Concatenate processed chunks
+    result.to_csv(output_path, index=False)
 
 
 # Example usage
